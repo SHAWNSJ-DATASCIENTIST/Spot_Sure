@@ -1,0 +1,22 @@
+# Local development services only. Alternative to `npm --prefix api run db:dev`;
+# both expose Postgres 17 on localhost:5433 with the same credentials.
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: spotsure
+      POSTGRES_PASSWORD: spotsure
+      POSTGRES_DB: spotsure
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - spotsure-pg:/var/lib/postgresql/data
+      - ./api/scripts/docker-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U spotsure -d spotsure"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  spotsure-pg:

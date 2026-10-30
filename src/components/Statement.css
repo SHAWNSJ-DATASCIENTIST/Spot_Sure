@@ -1,0 +1,139 @@
+.statement {
+  --drift: 0.5;
+  --read: 1;
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-top: 0;
+}
+
+.statement__inner {
+  position: relative;
+  z-index: 1;
+}
+
+.statement__text {
+  margin-top: 28px;
+  max-width: 22ch;
+  font-size: clamp(24px, 3.6vw, 52px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.statement__word {
+  display: inline;
+}
+/* scrubbed by scroll: each word brightens as the reader reaches it */
+.statement--live .statement__word {
+  opacity: clamp(0.14, calc((var(--read) * (var(--n) + 2) - var(--w))), 1);
+  transition: opacity 120ms linear;
+}
+
+.statement__index {
+  display: block;
+  margin-top: clamp(28px, 4vw, 48px);
+  font-size: clamp(72px, 11vw, 168px);
+  line-height: 0.85;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--hair-strong);
+}
+
+.statement__states {
+  list-style: none;
+  margin: clamp(36px, 5vw, 64px) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: min(880px, 60vw);
+  border-top: 1px solid var(--hair);
+}
+.statement__state {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 24px 4px 0;
+}
+.statement__state + .statement__state {
+  padding-left: 24px;
+  border-left: 1px solid var(--hair);
+}
+.statement__state-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.statement__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid var(--teal);
+}
+.state--available .statement__dot {
+  border-style: dashed;
+}
+.state--occupied .statement__dot {
+  background: var(--teal);
+}
+.state--verify .statement__dot {
+  border-color: var(--amber);
+  background: var(--amber);
+}
+.statement__state-rule {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+/* circular crop of the hero render, floating off the right edge */
+.statement__orb {
+  position: absolute;
+  top: 50%;
+  right: max(-20vw, -300px);
+  width: min(50vw, 720px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  opacity: 0.55;
+  outline: 1px solid var(--hair);
+  outline-offset: 18px;
+  transform: translateY(calc(-50% + (var(--drift) - 0.5) * -26vh)) rotate(calc((var(--drift) - 0.5) * 28deg));
+  will-change: transform;
+  pointer-events: none;
+}
+.statement__orb svg {
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 760px) {
+  .statement {
+    align-items: flex-start;
+    min-height: auto;
+  }
+  .statement__orb {
+    top: auto;
+    bottom: -8vw;
+    right: -30vw;
+    width: 86vw;
+    opacity: 0.16;
+    transform: rotate(calc((var(--drift) - 0.5) * 28deg));
+  }
+  .statement__states {
+    grid-template-columns: 1fr;
+    max-width: none;
+  }
+  .statement__state,
+  .statement__state + .statement__state {
+    padding: 16px 0;
+    border-left: 0;
+    border-bottom: 1px solid var(--hair);
+  }
+}

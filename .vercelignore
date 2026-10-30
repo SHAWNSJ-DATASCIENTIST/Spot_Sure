@@ -1,0 +1,3 @@
+# The API deploys on Render. Without this, Vercel turns every file under
+# api/ into a serverless function; /api/* is proxied by vercel.json instead.
+/api

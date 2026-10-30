@@ -1,0 +1,116 @@
+.close {
+  border-top: 1px solid var(--hair);
+  padding-top: clamp(88px, 11vw, 152px);
+  overflow: hidden;
+}
+
+.close__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.close__top > div:first-child {
+  flex: 1 1 420px;
+}
+
+.close__title {
+  margin-top: 22px;
+  max-width: 14ch;
+  font-size: clamp(30px, 3.6vw, 52px);
+  font-weight: 800;
+  text-wrap: balance;
+}
+
+.close__fine {
+  margin-top: 18px;
+  max-width: 48ch;
+}
+
+.close__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.close__strip {
+  margin-top: clamp(64px, 8vw, 104px);
+  padding: 18px 0;
+  border-top: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px 32px;
+  flex-wrap: wrap;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.close__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+.close__links a {
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.close__links a:hover {
+  color: var(--amber-ink);
+}
+
+/* Full-width wordmark, nudged down so the page edge crops it. */
+.close__mark {
+  margin: clamp(20px, 3vw, 40px) 0 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 10.5vw;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--ink);
+  transform: translateY(14%);
+  user-select: none;
+}
+
+@media (max-width: 640px) {
+  .close__actions {
+    width: 100%;
+  }
+  .close__actions .btn {
+    flex: 1 1 auto;
+  }
+  .close__strip {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* the wordmark rises letter by letter, then each letter lifts on hover */
+.close__char {
+  display: inline-block;
+  transition:
+    transform 1.1s var(--ease-out),
+    color 300ms var(--ease-out);
+  transition-delay: calc(var(--c) * 55ms);
+}
+.close__char:hover {
+  color: var(--amber);
+  transform: translateY(-8%);
+  transition-delay: 0s;
+  transition-duration: 300ms;
+}
+.motion-ok .close__mark.reveal:not(.is-in) {
+  opacity: 1;
+  filter: none;
+  transform: translateY(14%);
+}
+.motion-ok .close__mark:not(.is-in) .close__char {
+  transform: translateY(105%);
+}

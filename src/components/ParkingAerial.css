@@ -1,0 +1,116 @@
+/* Ambient motion inside the aerial render. Only runs with `.pa--live`
+   (the hero) and never under reduced motion. */
+.pa-drive,
+.pa-scan {
+  display: none;
+}
+
+.pa--live .pa-drive,
+.pa--live .pa-scan {
+  display: inline;
+}
+
+.pa--live .pa-drive--east {
+  animation: pa-east 11s linear infinite;
+}
+.pa--live .pa-drive--west {
+  animation: pa-west 14s linear infinite;
+  animation-delay: -6s;
+}
+@keyframes pa-east {
+  from {
+    transform: translateX(-400px);
+  }
+  to {
+    transform: translateX(2000px);
+  }
+}
+@keyframes pa-west {
+  from {
+    transform: translateX(2000px);
+  }
+  to {
+    transform: translateX(-400px);
+  }
+}
+
+.pa--live .pa-scan {
+  animation: pa-scan 6.5s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+@keyframes pa-scan {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  85%,
+  100% {
+    transform: translateX(1860px);
+    opacity: 0;
+  }
+}
+
+.pa--live .pa-lamp {
+  animation: pa-lamp 5.2s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes pa-lamp {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  48% {
+    opacity: 0.82;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 0.6;
+  }
+  52% {
+    opacity: 0.9;
+  }
+}
+
+/* detection boxes re-acquire in time with the sweep */
+.pa--live .pa-det {
+  animation: pa-det 6.5s ease-out infinite;
+}
+.pa--live .pa-det--verify rect:first-child {
+  animation: pa-verify 1.4s ease-in-out infinite;
+}
+@keyframes pa-det {
+  0%,
+  30% {
+    opacity: 0.35;
+  }
+  42% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes pa-verify {
+  50% {
+    stroke-opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pa--live .pa-drive,
+  .pa--live .pa-scan {
+    display: none;
+  }
+  .pa--live .pa-lamp,
+  .pa--live .pa-det,
+  .pa--live .pa-det--verify rect:first-child {
+    animation: none;
+  }
+}

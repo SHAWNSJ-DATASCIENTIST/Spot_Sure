@@ -1,0 +1,54 @@
+.cursor {
+  display: none;
+}
+.has-cursor .cursor {
+  display: block;
+}
+
+.cursor__dot,
+.cursor__ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 95;
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+.cursor__dot {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  background: var(--amber);
+}
+
+.cursor__ring {
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border: 1px solid rgba(237, 231, 220, 0.45);
+  mix-blend-mode: difference;
+}
+.cursor__ring::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  background: var(--ink);
+  transform: scale(0);
+  transition: transform 380ms var(--ease-out);
+}
+.cursor__ring--hot::after {
+  transform: scale(1.7);
+}
+.cursor__ring--grab::after {
+  transform: scale(2.4);
+}
+.cursor__ring--down::after {
+  transform: scale(1.1);
+}
+
+/* magnetic targets ease back into place */
+[data-magnetic] {
+  transition-property: color, border-color, transform;
+}

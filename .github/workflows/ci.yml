@@ -1,0 +1,108 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  web:
+    name: Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Dependency policy: block on high/critical advisories in anything that
+      # ships (production deps), and on critical ones anywhere, dev tooling
+      # included. Lower severities are reported in the log, not blocking.
+      - name: npm audit (production deps, high+)
+        run: npm audit --omit=dev --audit-level=high
+      - name: npm audit (all deps, critical)
+        run: npm audit --audit-level=critical
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  api:
+    name: API (with PostgreSQL)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: spotsure
+          POSTGRES_PASSWORD: spotsure
+          POSTGRES_DB: spotsure_test
+        ports: ["5433:5432"]
+        options: >-
+          --health-cmd "pg_isready -U spotsure -d spotsure_test"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      # Throwaway CI database credentials, not secrets.
+      DATABASE_URL: postgres://spotsure:spotsure@localhost:5433/spotsure_test
+      TEST_DATABASE_URL: postgres://spotsure:spotsure@localhost:5433/spotsure_test
+    defaults:
+      run:
+        working-directory: api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: api/package-lock.json
+      - run: npm ci
+      - name: npm audit (production deps, high+)
+        run: npm audit --omit=dev --audit-level=high
+      - name: npm audit (all deps, critical)
+        run: npm audit --audit-level=critical
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      # The production migrator (compiled, no tsx) must work against Postgres.
+      - name: Production migrator (dist/migrate.js)
+        run: npm run db:migrate:prod
+
+  # Supply-chain scan with Socket.dev (malware, install scripts, typosquats,
+  # network/shell access, etc.). `socket ci` = `socket scan create --report`:
+  # it fails when the report breaks the Socket org's security policy, and that
+  # failure fails this job. Without the SOCKET_CLI_API_TOKEN secret the CLI
+  # can't run at all ("Auth Error"), so the job warns visibly instead.
+  socket:
+    name: Socket.dev dependency scan
+    runs-on: ubuntu-latest
+    env:
+      SOCKET_CLI_API_TOKEN: ${{ secrets.SOCKET_CLI_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Warn when no Socket token is configured
+        if: env.SOCKET_CLI_API_TOKEN == ''
+        run: echo "::warning title=Socket scan not run::SOCKET_CLI_API_TOKEN secret is not set, so no Socket.dev supply-chain scan ran. See docs/architecture.md (Supply-chain checks)."
+      - name: Socket scan (blocks on policy violations)
+        if: env.SOCKET_CLI_API_TOKEN != ''
+        run: npx --yes socket@1.11.1 ci
+
+  # Committed secrets, across the full history. Gitleaks runs from its
+  # official image pinned by digest; --redact keeps matched values out of logs.
+  secrets:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: gitleaks
+        run: >-
+          docker run --rm -v "$PWD:/repo"
+          zricethezav/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f
+          git /repo --redact --no-banner

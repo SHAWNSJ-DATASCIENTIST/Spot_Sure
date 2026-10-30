@@ -1,0 +1,83 @@
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 20px;
+  border-radius: 999px;
+  border: 1px solid var(--ink);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    color var(--dur) var(--ease-out),
+    border-color var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out);
+}
+/* label slides up and a copy slides in from below on hover */
+.btn > span {
+  position: relative;
+  display: inline-block;
+  transition: transform var(--dur) var(--ease-out);
+}
+.btn > span::after {
+  content: attr(data-label);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  text-align: center;
+}
+.btn {
+  line-height: 40px;
+}
+.btn:hover > span {
+  transform: translateY(-100%);
+}
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  transform: translateY(101%);
+  transition: transform var(--dur) var(--ease-out);
+}
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn--solid {
+  background: var(--ink);
+  color: var(--ground);
+}
+.btn--solid::before {
+  background: var(--amber);
+}
+.btn--solid:hover {
+  border-color: var(--amber);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--hair-strong);
+}
+.btn--ghost::before {
+  background: var(--ink);
+}
+.btn--ghost:hover {
+  color: var(--ground);
+  border-color: var(--ink);
+}
+
+.btn:hover::before {
+  transform: translateY(0);
+}

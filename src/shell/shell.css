@@ -1,0 +1,312 @@
+/* Signed-in layout: top bar, sidebar on wide screens, off-canvas drawer on narrow ones. */
+
+.shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 236px minmax(0, 1fr);
+  grid-template-rows: var(--nav-h) 1fr;
+  grid-template-areas:
+    "top top"
+    "side main";
+  background: var(--ground);
+}
+
+.shell__top {
+  grid-area: top;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-inline: var(--gutter);
+  background: rgba(10, 12, 14, 0.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--hair);
+}
+.shell__brand {
+  text-decoration: none;
+  font-size: 15px;
+  margin-right: auto;
+}
+.shell__menu {
+  display: none;
+  width: 44px;
+  height: 44px;
+  margin-left: -10px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+}
+.shell__menu span {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  height: 1.5px;
+  background: var(--ink);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.shell__menu span:first-child {
+  top: 17px;
+}
+.shell__menu span:last-child {
+  top: 25px;
+}
+.shell--drawer .shell__menu span:first-child {
+  transform: translateY(4px) rotate(45deg);
+}
+.shell--drawer .shell__menu span:last-child {
+  transform: translateY(-4px) rotate(-45deg);
+}
+
+.shell__side {
+  grid-area: side;
+  position: sticky;
+  top: var(--nav-h);
+  align-self: start;
+  height: calc(100dvh - var(--nav-h));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 22px 14px;
+  border-right: 1px solid var(--hair);
+  overflow-y: auto;
+}
+.shell__side ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+.shell__side a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  text-decoration: none;
+  color: var(--ink-2);
+  border: 1px solid transparent;
+}
+.shell__side a:hover {
+  color: var(--ink);
+  background: var(--ground-2);
+}
+.shell__side a[aria-current="page"] {
+  color: var(--ink);
+  background: var(--ground-2);
+  border-color: var(--hair);
+  box-shadow: inset 3px 0 0 var(--amber);
+}
+.shell__side a:focus-visible {
+  box-shadow: var(--focus);
+}
+.shell__side-foot {
+  border-top: 1px solid var(--hair);
+  padding-top: 14px !important;
+}
+
+.shell__main {
+  grid-area: main;
+  min-width: 0;
+  width: 100%;
+  max-width: 1180px;
+  padding: clamp(24px, 4vw, 48px) var(--gutter) 80px;
+  display: grid;
+  gap: clamp(20px, 3vw, 32px);
+  align-content: start;
+}
+.shell__main:focus {
+  outline: none;
+}
+
+/* ---------- user menu ---------- */
+
+.bell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--hair-strong);
+  color: var(--ink);
+}
+.bell:hover,
+.bell[aria-current="page"] {
+  border-color: var(--ink);
+}
+.bell:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+.bell__count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--amber);
+  color: var(--ground);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+}
+
+.user-menu {
+  position: relative;
+}
+.user-menu__button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 4px 12px 4px 4px;
+  border-radius: 999px;
+  border: 1px solid var(--hair-strong);
+  background: transparent;
+  cursor: pointer;
+  max-width: 260px;
+}
+.user-menu__button:hover {
+  border-color: var(--ink);
+}
+.user-menu__avatar {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--amber);
+  color: var(--ground);
+  font-size: 12px;
+  font-weight: 700;
+}
+.user-menu__name {
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.user-menu__list {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 40;
+  min-width: 240px;
+  padding: 8px;
+  border-radius: 14px;
+  border: 1px solid var(--hair-strong);
+  background: var(--ground-2);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  display: grid;
+}
+.user-menu__who {
+  display: grid;
+  gap: 2px;
+  padding: 8px 10px 10px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--hair);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.user-menu__role {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.user-menu__list [role="menuitem"] {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+  text-align: left;
+  cursor: pointer;
+}
+.user-menu__list [role="menuitem"]:hover,
+.user-menu__list [role="menuitem"]:focus-visible {
+  background: var(--ground-3);
+}
+
+/* ---------- narrow screens: drawer ---------- */
+
+@media (max-width: 900px) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "top"
+      "main";
+  }
+  .shell__menu {
+    display: block;
+  }
+  .shell__side {
+    position: fixed;
+    top: var(--nav-h);
+    left: 0;
+    bottom: 0;
+    z-index: 25;
+    width: min(300px, 86vw);
+    height: auto;
+    background: var(--ground);
+    border-right: 1px solid var(--hair-strong);
+    transform: translateX(-102%);
+    visibility: hidden;
+    transition:
+      transform var(--dur) var(--ease-out),
+      visibility 0s linear var(--dur);
+  }
+  .shell--drawer .shell__side {
+    transform: none;
+    visibility: visible;
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .shell__scrim {
+    position: fixed;
+    inset: var(--nav-h) 0 0;
+    z-index: 20;
+    background: rgba(5, 6, 8, 0.6);
+  }
+}
+
+@media (max-width: 480px) {
+  .user-menu__name {
+    display: none;
+  }
+  .user-menu__button {
+    padding-right: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell__side,
+  .shell--drawer .shell__side,
+  .shell__menu span {
+    transition: none;
+  }
+}
+
+.app-loading {
+  min-height: 100vh;
+  padding: 40vh var(--gutter) 0;
+  text-align: center;
+  color: var(--ink-2);
+  background: var(--ground);
+}

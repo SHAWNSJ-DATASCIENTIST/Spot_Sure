@@ -1,0 +1,41 @@
+/* SpotSure design tokens — dark night-deck direction.
+   The two accents are sampled from the hero render (sodium-lamp amber on
+   the tarmac, teal from the detection overlay) so page and image agree. */
+:root {
+  --ground: #0a0c0e;
+  --ground-2: #101317;
+  --ground-3: #161a1f;
+  --ink: #ede7dc;
+  --ink-2: #9ea5a8;
+  --muted: #6c7378;
+  --amber: #e8913c;
+  --amber-display: #e8913c;
+  --amber-ink: #e8913c;
+  --teal: #2e6b72;
+  --teal-bright: #4f9aa3; /* teal as small type on the dark ground */
+  --hair: rgba(237, 231, 220, 0.13);
+  --hair-strong: rgba(237, 231, 220, 0.24);
+
+  /* Deck sleeves sit one step above the ground */
+  --sleeve: #12161a;
+  --sleeve-ink: #ede7dc;
+  --sleeve-muted: #9ea5a8;
+  --sleeve-hair: rgba(237, 231, 220, 0.13);
+
+  --font-display: "Syne", "Arial Black", system-ui, sans-serif;
+  --font-body: "Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --nav-h: 58px;
+  --gutter: clamp(16px, 4vw, 56px);
+  --maxw: 1320px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 180ms;
+  --dur: 420ms;
+  --dur-slow: 900ms;
+
+  --focus: 0 0 0 2px var(--ground), 0 0 0 4px var(--amber);
+
+  color-scheme: dark;
+}

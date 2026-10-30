@@ -1,0 +1,294 @@
+/* Static defaults are the finished, readable page (no-JS / reduced motion):
+   portal open, image settled, title whole. `.portal--live` hands every value
+   to the scroll-driven custom properties, starting closed. */
+.portal {
+  position: relative;
+  height: 100svh;
+}
+.portal--live {
+  height: 250svh;
+}
+
+.portal__stage {
+  --open: 1;
+  --title: 0;
+  --img: 1;
+  --wash: 0.32;
+  --dots: 1;
+  --meta: 1;
+  --mx: 0;
+  --my: 0;
+
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--ground);
+}
+.portal--live .portal__stage {
+  --open: 0;
+  --title: 0;
+  --img: 1.16;
+  --wash: 0;
+  --dots: 0;
+}
+
+.portal__image,
+.portal__wash,
+.portal__veil {
+  position: absolute;
+  inset: 0;
+}
+
+.portal__image {
+  z-index: 0;
+  inset: -3%;
+  transform: translate(calc(var(--mx) * -28px), calc(var(--my) * -20px)) scale(var(--img));
+  will-change: transform;
+}
+.portal__image svg {
+  width: 100%;
+  height: 100%;
+}
+
+.portal__wash {
+  z-index: 1;
+  background: linear-gradient(120deg, var(--amber) 0%, var(--teal) 100%);
+  mix-blend-mode: overlay;
+  opacity: var(--wash);
+}
+
+.portal__veil {
+  z-index: 2;
+  background: radial-gradient(ellipse 75% 70% at 50% 50%, transparent 45%, rgba(5, 6, 7, 0.78) 100%);
+  opacity: calc(0.35 + var(--open) * 0.65);
+}
+
+.portal__panel {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  width: 50.5%;
+  background:
+    radial-gradient(ellipse 60% 50% at var(--side) 50%, rgba(237, 231, 220, 0.035), transparent 70%),
+    var(--ground);
+  will-change: transform;
+}
+.portal__panel--l {
+  --side: 100%;
+}
+.portal__panel--r {
+  --side: 0%;
+}
+
+/* a hairline of lamp light in the seam, drawn shut as the portal opens */
+.portal__seam {
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  margin-left: -0.5px;
+  background: linear-gradient(to bottom, transparent, var(--amber) 30%, var(--amber) 70%, transparent);
+  transform: scaleY(calc(1 - var(--open)));
+  opacity: calc(0.7 - var(--open));
+}
+.motion-ok .portal__seam {
+  animation: seam-in 1.6s var(--ease-out) 0.2s both;
+}
+@keyframes seam-in {
+  from {
+    clip-path: inset(50% 0 50% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+.portal__panel--l {
+  left: 0;
+  border-right: 1px solid var(--hair);
+  transform: translateX(calc(var(--open) * -105%));
+}
+.portal__panel--r {
+  right: 0;
+  border-left: 1px solid var(--hair);
+  transform: translateX(calc(var(--open) * 105%));
+}
+
+.portal__dot {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: 50%;
+  outline: 1px solid currentColor;
+  outline-offset: 5px;
+  opacity: calc(0.25 + var(--dots) * 0.75);
+}
+.portal__dot--a {
+  color: var(--amber);
+  background: var(--amber);
+  transform: translate(calc(var(--dots) * -40vw), calc(var(--dots) * -36vh));
+}
+.portal__dot--b {
+  color: var(--teal);
+  background: var(--teal);
+  transform: translate(calc(var(--dots) * 40vw), calc(var(--dots) * 36vh));
+}
+
+.portal__title {
+  position: absolute;
+  z-index: 5;
+  top: 50%;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  /* "SPOTSURE" in Syne 800 measures ~9.3em, so 10.2vw spans ~95% of the width */
+  font-size: min(10.2vw, 30svh);
+  line-height: 0.8;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink);
+  text-shadow: 0 2px 30px rgba(0, 0, 0, calc(var(--open) * 0.5));
+  /* grow while tightening: the opening, not a zoom */
+  letter-spacing: calc(-0.01em - var(--title) * 0.06em);
+  transform: translateY(-50%) scale(calc(1 + var(--title) * 0.16));
+  will-change: transform;
+  pointer-events: none;
+}
+.portal__half {
+  display: inline-block;
+  will-change: transform;
+}
+.portal__half--l {
+  transform: translateX(calc(var(--title) * -50%));
+}
+.portal__half--r {
+  transform: translateX(calc(var(--title) * 50%));
+}
+.portal__char {
+  display: inline-block;
+}
+/* intro: letters rise out of the seam, centre-out */
+.motion-ok .portal__char {
+  animation: char-rise 1.3s var(--ease-out) both;
+  animation-delay: calc(0.35s + (var(--c) - 3.5) * (var(--c) - 3.5) * 0.018s);
+}
+@keyframes char-rise {
+  from {
+    opacity: 0;
+    transform: translateY(45%) rotate(4deg);
+    filter: blur(12px);
+  }
+}
+.motion-ok .portal__meta p {
+  animation: meta-in 1s var(--ease-out) 1.1s both;
+}
+@keyframes meta-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.portal__meta {
+  position: absolute;
+  z-index: 6;
+  left: var(--gutter);
+  right: var(--gutter);
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  opacity: var(--meta);
+}
+.portal__meta--top {
+  top: calc(var(--nav-h) + 20px);
+}
+.portal__meta--bottom {
+  bottom: 22px;
+}
+.portal__meta p {
+  padding: 4px 8px;
+  margin: -4px -8px;
+  border-radius: 3px;
+  background: rgba(10, 12, 14, calc(var(--open) * 0.55));
+}
+.portal__meta-r {
+  text-align: right;
+}
+
+.portal__scroll {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.portal__scroll-line {
+  position: relative;
+  width: 1px;
+  height: 22px;
+  background: var(--hair-strong);
+  overflow: hidden;
+}
+.portal__scroll-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--amber);
+  animation: scroll-cue 2.2s var(--ease-in-out) infinite;
+}
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  60%,
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@media (max-width: 640px) {
+  .portal--live {
+    height: 220svh;
+  }
+  .portal__title {
+    font-size: 10.4vw;
+  }
+  .portal__meta {
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+  }
+  .portal__meta--top .portal__meta-r {
+    display: none;
+  }
+  .portal__meta--bottom {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .portal__meta--bottom .portal__meta-r {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portal__scroll-line::after {
+    animation: none;
+  }
+  .portal__seam {
+    display: none;
+  }
+}
